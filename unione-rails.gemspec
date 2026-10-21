@@ -13,7 +13,7 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = '>= 2.7'
   spec.files = Dir['lib/**/*.rb', 'README.md', 'AGENTS.md', 'LICENSE']
   spec.require_paths = ['lib']
-  spec.add_dependency 'unione', '>= 1.2.3'
+  spec.add_dependency 'unione', '>= 1.2.4'
   spec.add_dependency 'actionmailer', '>= 6.1'
   spec.add_dependency 'actionpack', '>= 6.1'
   spec.add_dependency 'railties', '>= 6.1'
