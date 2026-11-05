@@ -28,9 +28,11 @@ module UniOne
       end
 
       initializer 'unione.webhook_route' do |app|
-        options = app.config.unione
-        if options.webhook_enabled != false
-          app.routes.prepend do
+        # the flag and the path are read when the routes are drawn, after config/initializers/*.rb ran
+        # (config.webhook_enabled = false in UniOne::Wrapper.configure works)
+        app.routes.prepend do
+          options = ::UniOne::Wrapper.configuration
+          if options.webhook_enabled != false
             match options.webhook_path, to: ::UniOne::Wrapper::WebhookEndpoint.new, via: %i[get head post],
                                         as: 'unione_webhook'
           end

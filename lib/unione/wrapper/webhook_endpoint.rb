@@ -12,8 +12,13 @@ module UniOne
     # Subscribers must be fast: the API waits for 200 OK for 3 seconds only.
     class WebhookEndpoint
       HEADERS = { 'content-type' => 'text/plain' }.freeze
+      # "no such route": the router goes on to the next routes (a route of the app on the same path, else 404);
+      # the router of Rails 6.1 / 7.0 reads "X-Cascade", of 7.1+ (Rack 3) "x-cascade"
+      NOT_FOUND = [404, { 'X-Cascade' => 'pass', 'x-cascade' => 'pass' }.freeze, [].freeze].freeze
 
       def call(env)
+        # turned off after the routes were drawn (webhook_enabled = false): as if the route was not there
+        return NOT_FOUND if ::UniOne::Wrapper.configuration.webhook_enabled == false
         return reply(200, 'OK') unless env['REQUEST_METHOD'] == 'POST'
 
         input = env['rack.input']

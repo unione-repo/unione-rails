@@ -10,6 +10,7 @@ Ruby on Rails integration of the [UniOne Ruby SDK](https://github.com/unione-rep
 
 ```bash
 bundle add unione-rails
+bin/rails generate unione:install  # delivery method, config/initializers/unione.rb
 ```
 
 Requirements: Ruby 2.7+, Rails 6.1+.
@@ -29,6 +30,7 @@ Settings are read from the environment by default:
 # or config/application.rb:
 config.unione.api_key = ENV.fetch('UNIONE_API_KEY')
 config.unione.host = 'us1.unione.io'
+# config/environments/production.rb (development and test keep their delivery method):
 config.action_mailer.delivery_method = :unione
 ```
 
@@ -42,7 +44,7 @@ config.action_mailer.delivery_method = :unione
 | `config.unione.webhook_key` | `UNIONE_WEBHOOK_KEY` |  | API key the webhooks are signed with (the key of the user/project of the webhook), if it differs from the API key. |
 | `config.unione.webhook_path` | `UNIONE_WEBHOOK_PATH` | `/unione/webhook` | Path of the webhook endpoint. |
 
-The API key can also be stored in the credentials (`unione: { api_key: ... }`). The webhook route `unione_webhook` is a Rack endpoint (no CSRF, no session); `config.unione.webhook_enabled = false` turns it off.
+The API key can also be stored in the credentials (`unione: { api_key: ... }`). The webhook route `unione_webhook` is a Rack endpoint (no CSRF, no session); `config.unione.webhook_enabled = false` turns it off. `rails generate unione:install` sets the delivery method in `config/environments/production.rb` only: development and test keep theirs.
 
 ## Sending mail
 
@@ -114,6 +116,10 @@ class EmailsController < ApplicationController
   end
 end
 ```
+
+### Errors
+
+A failed delivery of Action Mailer raises the SDK `ApiError` (with `raise_delivery_errors`), the API client too: `kind` tells what failed (api, network, timeout, invalid_response, invalid_request), `retryable?` whether a repeat may succeed (network, timeout, HTTP 429 and 5xx), `hint` how to fix an API error and `api_message` the message of the API.
 
 ## No domain yet: the test sandbox domain
 
