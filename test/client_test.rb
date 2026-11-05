@@ -26,8 +26,8 @@ class ClientTest < Minitest::Test
 
     sent = transport.requests[0]
     assert_equal '/api/v1/system/ping.json', sent[:uri].path
-    assert_equal 'rails.1.3.1', ::UniOne::Wrapper::PLATFORM
-    assert_equal [['platform', 'rails.1.3.1,ruby-sdk.1.3.0']], URI.decode_www_form(sent[:uri].query)
+    assert_equal 'rails.1.3.2', ::UniOne::Wrapper::PLATFORM
+    assert_equal [['platform', 'rails.1.3.2,ruby-sdk.1.3.1']], URI.decode_www_form(sent[:uri].query)
     assert_equal 'test-key', sent[:headers]['X-API-KEY']
   end
 
